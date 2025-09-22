@@ -33,7 +33,8 @@ const state = {
   links:   getJSON(K.links, []),
   profile: getJSON(K.profile, {...DEFAULT_PROFILE}),
   skin:    getJSON(K.skin,   {...DEFAULT_SKIN}),
-  theme:   getJSON(K.theme,  "light")
+  theme:   getJSON(K.theme,  "light"),
+  zoom:    1
 };
 
 /* THEME */
@@ -64,15 +65,23 @@ function applySkin(){
   const el = $("#previewCard"), s = state.skin;
   const fonts = {
     system:'ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif',
-    inter:'"Inter"',
-    poppins:'"Poppins"',
-    merriweather:'"Merriweather", Georgia, serif',
-    robotomono:'"Roboto Mono", monospace',
-    nunito:'"Nunito"', lato:'"Lato"', opensans:'"Open Sans"',
-    montserrat:'"Montserrat"', playfair:'"Playfair Display", Georgia, serif',
-    worksans:'"Work Sans"', dmsans:'"DM Sans"', sourcesans:'"Source Sans 3"',
-    ibmplex:'"IBM Plex Sans"', spacegrotesk:'"Space Grotesk"', outfit:'"Outfit"',
-    firacode:'"Fira Code", monospace', jetbrains:'"JetBrains Mono", monospace'
+    inter:'"Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif',
+    poppins:'"Poppins", ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif',
+    merriweather:'"Merriweather", Georgia, "Times New Roman", serif',
+    robotomono:'"Roboto Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    nunito:'"Nunito", ui-sans-serif, system-ui',
+    lato:'"Lato", ui-sans-serif, system-ui',
+    opensans:'"Open Sans", ui-sans-serif, system-ui',
+    montserrat:'"Montserrat", ui-sans-serif, system-ui',
+    playfair:'"Playfair Display", Georgia, serif',
+    worksans:'"Work Sans", ui-sans-serif, system-ui',
+    dmsans:'"DM Sans", ui-sans-serif, system-ui',
+    sourcesans:'"Source Sans 3", ui-sans-serif, system-ui',
+    ibmplex:'"IBM Plex Sans", ui-sans-serif, system-ui',
+    spacegrotesk:'"Space Grotesk", ui-sans-serif, system-ui',
+    outfit:'"Outfit", ui-sans-serif, system-ui',
+    firacode:'"Fira Code", SFMono-Regular, Menlo, Consolas, monospace',
+    jetbrains:'"JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace'
   };
   const pct = Math.max(0, Math.min(100, Number(s.shadowPct)||0));
   const blur = 10 + Math.round(pct*0.5);
@@ -189,7 +198,7 @@ function renderForm(){
   });
 }
 
-/* PHOTO CROPPER */
+/* =================== PHOTO CROPPER =================== */
 const crop = { img:null, natural:{w:0,h:0}, baseFit:1, scale:1, rotate:0, tx:0, ty:0, dragging:false, start:{x:0,y:0}, stageSize:320, minCoverScale:1 };
 function computeMinCoverScale(){
   const L=crop.stageSize, w0=crop.natural.w*crop.baseFit, h0=crop.natural.h*crop.baseFit;
@@ -234,17 +243,28 @@ function exportCropped(size=512){
   return canvas.toDataURL("image/png");
 }
 
-/* FONT PREVIEW — show sample in select */
+/* FONT PREVIEW — the control itself shows the font */
 function applyFontPreview(){
   const select = $("#fontSelect");
   const map = {
     system:'ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif',
-    inter:'"Inter"', poppins:'"Poppins"', merriweather:'"Merriweather", serif',
-    robotomono:'"Roboto Mono", monospace', nunito:'"Nunito"', lato:'"Lato"',
-    opensans:'"Open Sans"', montserrat:'"Montserrat"', playfair:'"Playfair Display", serif',
-    worksans:'"Work Sans"', dmsans:'"DM Sans"', sourcesans:'"Source Sans 3"',
-    ibmplex:'"IBM Plex Sans"', spacegrotesk:'"Space Grotesk"', outfit:'"Outfit"',
-    firacode:'"Fira Code", monospace', jetbrains:'"JetBrains Mono", monospace'
+    inter:'"Inter"',
+    poppins:'"Poppins"',
+    merriweather:'"Merriweather", Georgia, serif',
+    robotomono:'"Roboto Mono", monospace',
+    nunito:'"Nunito"',
+    lato:'"Lato"',
+    opensans:'"Open Sans"',
+    montserrat:'"Montserrat"',
+    playfair:'"Playfair Display", Georgia, serif',
+    worksans:'"Work Sans"',
+    dmsans:'"DM Sans"',
+    sourcesans:'"Source Sans 3"',
+    ibmplex:'"IBM Plex Sans"',
+    spacegrotesk:'"Space Grotesk"',
+    outfit:'"Outfit"',
+    firacode:'"Fira Code", monospace',
+    jetbrains:'"JetBrains Mono", monospace'
   };
   select.style.fontFamily = map[state.skin.font] || map.system;
   Array.from(select.options).forEach(opt=>{
@@ -257,8 +277,11 @@ function renderShapePicker(){
   const host=$("#avatarShapePicker"); host.innerHTML="";
   ["circle","rounded","squircle","hex","diamond"].forEach(shape=>{
     const btn=document.createElement("button");
-    btn.type="button"; btn.className="shape-opt"; btn.dataset.shape=shape;
-    btn.innerHTML=`<div class="mini"></div><div style="font-size:11px;margin-top:6px;text-transform:capitalize;color:var(--muted)">${shape}</div>`;
+    btn.type="button";
+    btn.className="shape-opt";
+    btn.dataset.shape=shape;
+    btn.title=shape;
+    btn.innerHTML=`<div class="mini"></div><div style="font-size:11px;margin-top:6px;text-transform:capitalize;color:var(--muted);text-align:center">${shape}</div>`;
     if(state.skin.avatarShape===shape) btn.classList.add("active");
     btn.addEventListener("click", ()=>{
       $$(".shape-opt", host).forEach(b=>b.classList.remove("active"));
@@ -273,14 +296,18 @@ function renderShapePicker(){
 
 /* PUBLISH — build encoded link to viewer.html */
 function buildPublishLink(){
-  const snapshot = { profile: state.profile, links: state.links, skin: state.skin };
+  const snapshot = {
+    profile: state.profile,
+    links: state.links,
+    skin: state.skin
+  };
   const json = JSON.stringify(snapshot);
   const data = encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
   const url = `${location.origin}${location.pathname.replace(/[^/]+$/, '')}viewer.html?data=${data}`;
   return url;
 }
 
-/* EVENTS */
+/* =================== EVENTS =================== */
 function wire(){
   // tabs
   $$(".tab").forEach(t=>{
@@ -288,6 +315,7 @@ function wire(){
       e.preventDefault();
       $$(".tab").forEach(x=>x.classList.remove("active"));
       t.classList.add("active");
+      // hide all
       $("#linksEditor").style.display="none";
       $("#profileDetails").classList.add("hidden");
       $("#appearance").classList.add("hidden");
@@ -300,8 +328,8 @@ function wire(){
     });
   });
 
-  // preview panel (book-like flip)
-  $("#previewBtn").addEventListener("click", ()=>{
+  // full preview with page flip
+  $("#openFullPreview").addEventListener("click", ()=>{
     const panel = $("#fullPreview");
     panel.classList.remove("hidden","closing");
     renderPreview();
@@ -313,19 +341,17 @@ function wire(){
     setTimeout(()=>panel.classList.add("hidden"), 600);
   });
 
-  // theme toggle
+  // theme
   $("#themeToggle").addEventListener("click", ()=>{
     state.theme = (state.theme==="dark") ? "light" : "dark";
     applyTheme(state.theme);
   });
 
-  // add new link
+  // links live
   $("#addLinkBtn").addEventListener("click", ()=>{
     state.links.push({platform:"website", url:""});
     renderForm(); renderPreview();
   });
-
-  // remove / update links
   $("#linksFormList").addEventListener("click", e=>{
     const rm=e.target.closest(".remove-btn"); if(!rm) return;
     const box=e.target.closest(".link-item"); const idx=Number(box.dataset.index);
@@ -344,153 +370,91 @@ function wire(){
     state.links = JSON.parse(JSON.stringify(DEFAULT_TEMPLATE_LINKS));
     state.skin  = {...DEFAULT_SKIN};
     renderForm(); renderPreview(); applySkin(); renderShapePicker();
+    $("#cardSizeRange").value = state.zoom = 1;
+    $("#cardZoomWrap").style.setProperty('--card-scale', state.zoom);
     showToast("Default template loaded", "info");
   });
 
-  // profile fields
+  // profile
   $("#inpName").addEventListener("input", e=>{ state.profile.name=e.target.value; renderPreview(); });
   $("#inpEmail").addEventListener("input", e=>{ state.profile.email=e.target.value; renderPreview(); });
   $("#inpInitials").addEventListener("input", e=>{ state.profile.initials=e.target.value.toUpperCase(); renderPreview(); });
 
-  // avatar upload/edit
-  $("#inpAvatarFile").addEventListener("change", e=>{
-    const file=e.target.files && e.target.files[0]; if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>openCropper(reader.result);
-    reader.readAsDataURL(file);
+  // photo upload/edit
+  $("#inpAvatarFile").addEventListener("change", (e)=>{
+    const file = e.target.files && e.target.files[0]; if(!file) return;
+    const reader = new FileReader(); reader.onload = () => { openCropper(reader.result); }; reader.readAsDataURL(file);
   });
   $("#btnEditPhoto").addEventListener("click", ()=>{
-    if(!state.profile.avatar){ showToast("Upload a photo first","error"); return; }
-    openCropper(state.profile.avatar);
+    const src = state.profile.avatar; if(!src){ showToast("Upload a photo first", "error"); return; }
+    openCropper(src);
   });
   $("#btnClearPhoto").addEventListener("click", ()=>{
-    state.profile.avatar=null;
-    $("#inpAvatarFile").value="";
-    renderPreview();
+    state.profile.avatar = null; $("#inpAvatarFile").value = ""; renderPreview();
   });
 
-  // cropper dragging + zoom
+  // cropper
   const stage=$("#cropStage");
-  stage.addEventListener("pointerdown", e=>{
-    crop.dragging=true; crop.start.x=e.clientX; crop.start.y=e.clientY;
-    stage.setPointerCapture(e.pointerId);
-  });
-  stage.addEventListener("pointermove", e=>{
-    if(!crop.dragging) return;
-    crop.tx+=(e.clientX-crop.start.x);
-    crop.ty+=(e.clientY-crop.start.y);
-    crop.start.x=e.clientX; crop.start.y=e.clientY;
-    clampPan(); applyCropTransform();
-  });
-  stage.addEventListener("pointerup", e=>{ crop.dragging=false; stage.releasePointerCapture?.(e.pointerId); });
+  stage.addEventListener("pointerdown", (e)=>{ crop.dragging=true; crop.start.x=e.clientX; crop.start.y=e.clientY; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener("pointermove", (e)=>{ if(!crop.dragging) return; crop.tx += (e.clientX-crop.start.x); crop.ty += (e.clientY-crop.start.y); crop.start.x=e.clientX; crop.start.y=e.clientY; clampPan(); applyCropTransform(); });
+  stage.addEventListener("pointerup", (e)=>{ crop.dragging=false; stage.releasePointerCapture?.(e.pointerId); });
   stage.addEventListener("pointercancel", ()=>{ crop.dragging=false; });
-  stage.addEventListener("wheel", e=>{
-    e.preventDefault();
-    crop.scale=Math.min(3,Math.max(0.5,crop.scale+(e.deltaY>0?-0.06:0.06)));
-    computeMinCoverScale();
-    if(crop.scale<crop.minCoverScale) crop.scale=crop.minCoverScale;
-    $("#zoomRange").value=Number(crop.scale.toFixed(2));
-    clampPan(); applyCropTransform();
-  }, {passive:false});
-
-  $("#zoomRange").addEventListener("input", e=>{
-    crop.scale=Number(e.target.value); computeMinCoverScale();
-    if(crop.scale<crop.minCoverScale){
-      crop.scale=crop.minCoverScale; e.target.value=crop.scale.toFixed(2);
-    }
-    clampPan(); applyCropTransform();
-  });
-  $("#rotateRange").addEventListener("input", e=>{
-    crop.rotate=Number(e.target.value); computeMinCoverScale();
-    if(crop.scale<crop.minCoverScale){
-      crop.scale=crop.minCoverScale;
-      $("#zoomRange").value=crop.scale.toFixed(2);
-    }
-    clampPan(); applyCropTransform();
-  });
-
-  $("#applyCropBtn").addEventListener("click", ()=>{
-    state.profile.avatar=exportCropped(512);
-    renderPreview(); closeModal();
-    showToast("Photo updated","success");
-  });
-  $("#resetCropBtn").addEventListener("click", ()=>{
-    crop.scale=1; crop.rotate=0; crop.tx=0; crop.ty=0;
-    computeMinCoverScale();
-    if(crop.scale<crop.minCoverScale) crop.scale=crop.minCoverScale;
-    $("#zoomRange").value=crop.scale.toFixed(2);
-    $("#rotateRange").value=0;
-    clampPan(); applyCropTransform();
-  });
+  stage.addEventListener("wheel", (e)=>{ e.preventDefault(); const d=e.deltaY>0?-0.06:0.06; crop.scale=Math.min(3, Math.max(0.5, crop.scale + d)); computeMinCoverScale(); if(crop.scale<crop.minCoverScale) crop.scale=crop.minCoverScale; $("#zoomRange").value=Number(crop.scale.toFixed(2)); clampPan(); applyCropTransform(); }, {passive:false});
+  $("#zoomRange").addEventListener("input", e=>{ crop.scale=Number(e.target.value); computeMinCoverScale(); if(crop.scale<crop.minCoverScale){ crop.scale=crop.minCoverScale; e.target.value=crop.scale.toFixed(2);} clampPan(); applyCropTransform(); });
+  $("#rotateRange").addEventListener("input", e=>{ crop.rotate=Number(e.target.value); computeMinCoverScale(); if(crop.scale<crop.minCoverScale){ crop.scale=crop.minCoverScale; $("#zoomRange").value=crop.scale.toFixed(2);} clampPan(); applyCropTransform(); });
+  $("#applyCropBtn").addEventListener("click", ()=>{ const dataURL=exportCropped(512); state.profile.avatar=dataURL; renderPreview(); closeModal(); showToast("Photo updated","success"); });
+  $("#resetCropBtn").addEventListener("click", ()=>{ crop.scale=1; crop.rotate=0; crop.tx=0; crop.ty=0; computeMinCoverScale(); if(crop.scale<crop.minCoverScale) crop.scale=crop.minCoverScale; $("#zoomRange").value=crop.scale.toFixed(2); $("#rotateRange").value=0; clampPan(); applyCropTransform(); });
   $("#closeModalBtn").addEventListener("click", closeModal);
   $(".modal-backdrop").addEventListener("click", closeModal);
 
   // appearance live
-  $("#fontSelect").addEventListener("change", e=>{
-    state.skin.font=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorBarStart").addEventListener("input", e=>{
-    state.skin.barStart=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorBarEnd").addEventListener("input", e=>{
-    state.skin.barEnd=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorSurface").addEventListener("input", e=>{
-    state.skin.surface=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorText").addEventListener("input", e=>{
-    state.skin.text=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorMuted").addEventListener("input", e=>{
-    state.skin.muted=e.target.value; applySkin(); renderPreview();
-  });
-  $("#colorRing").addEventListener("input", e=>{
-    state.skin.ring=e.target.value; applySkin(); renderPreview();
-  });
-  $("#rangeRadius").addEventListener("input", e=>{
-    state.skin.radius=Number(e.target.value); applySkin(); renderPreview();
-  });
-  $("#rangeShadow").addEventListener("input", e=>{
-    state.skin.shadowPct=Number(e.target.value); applySkin();
-  });
-  $("#avatarRingSelect").addEventListener("change", e=>{
-    state.skin.avatarRing=e.target.value; applySkin(); renderPreview();
-  });
-  $("#linkShapeSelect").addEventListener("change", e=>{
-    state.skin.linkShape=e.target.value; applySkin(); renderPreview();
-  });
+  $("#fontSelect").addEventListener("change", e=>{ state.skin.font=e.target.value; applySkin(); });
+  $("#colorBarStart").addEventListener("input", e=>{ state.skin.barStart=e.target.value; applySkin(); });
+  $("#colorBarEnd").addEventListener("input", e=>{ state.skin.barEnd=e.target.value; applySkin(); });
+  $("#colorSurface").addEventListener("input", e=>{ state.skin.surface=e.target.value; applySkin(); });
+  $("#colorText").addEventListener("input", e=>{ state.skin.text=e.target.value; applySkin(); });
+  $("#colorMuted").addEventListener("input", e=>{ state.skin.muted=e.target.value; applySkin(); });
+  $("#colorRing").addEventListener("input", e=>{ state.skin.ring=e.target.value; applySkin(); });
+  $("#rangeRadius").addEventListener("input", e=>{ state.skin.radius=Number(e.target.value); applySkin(); });
+  $("#rangeShadow").addEventListener("input", e=>{ state.skin.shadowPct=Number(e.target.value); applySkin(); });
+  $("#avatarRingSelect").addEventListener("change", e=>{ state.skin.avatarRing=e.target.value; applySkin(); });
+  $("#linkShapeSelect").addEventListener("change", e=>{ state.skin.linkShape=e.target.value; applySkin(); });
 
-  // avatar shape previews
-  renderShapePicker();
-
-  // publish section
-  const copyBtn=$("#copyPublishLink");
-  if(copyBtn){
-    copyBtn.addEventListener("click", async ()=>{
-      try{
-        await copy(buildPublishLink());
-        showToast("Link copied","success");
-      }catch{ showToast("Could not copy","error"); }
-    });
-  }
-  const openBtn=$("#openPublishLink");
-  if(openBtn){
-    openBtn.addEventListener("click", ()=>window.open(buildPublishLink(),"_blank","noopener"));
-  }
+  // card size (preview)
+  $("#cardSizeRange").addEventListener("input", e=>{
+    state.zoom = Number(e.target.value);
+    $("#cardZoomWrap").style.setProperty('--card-scale', state.zoom);
+  });
 
   // save all
   $("#saveAllBtn").addEventListener("click", ()=>{
-    setJSON(K.links,state.links);
-    setJSON(K.profile,state.profile);
-    setJSON(K.skin,state.skin);
-    setJSON(K.theme,state.theme);
-    showToast("All changes saved","success");
+    setJSON(K.links, state.links);
+    setJSON(K.profile, state.profile);
+    setJSON(K.skin, state.skin);
+    setJSON(K.theme, state.theme);
+    showToast("All changes saved", "success");
+  });
+
+  // publish
+  $("#btnGenerateLink").addEventListener("click", ()=>{
+    const url = buildPublishLink();
+    $("#publishUrl").value = url;
+    $("#btnCopyLink").disabled = false;
+    const a = $("#btnOpenLink");
+    a.href = url; a.style.pointerEvents="auto"; a.style.opacity="1";
+    showToast("Share link ready", "success");
+  });
+  $("#btnCopyLink").addEventListener("click", ()=>{
+    const url = $("#publishUrl").value;
+    if(!url) return;
+    copy(url);
+    showToast("Link copied", "info");
   });
 }
 
 /* CLOSE MODAL */
 function closeModal(){
-  const modal=$("#photoModal");
+  const modal = $("#photoModal");
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden","true");
 }
@@ -498,28 +462,31 @@ function closeModal(){
 /* BOOT */
 (function(){
   initTheme();
-  $("#inpName").value=state.profile.name||"";
-  $("#inpEmail").value=state.profile.email||"";
-  $("#inpInitials").value=state.profile.initials||"";
 
-  // appearance seed
-  $("#fontSelect").value=state.skin.font;
-  $("#colorBarStart").value=state.skin.barStart;
-  $("#colorBarEnd").value=state.skin.barEnd;
-  $("#colorSurface").value=state.skin.surface;
-  $("#colorText").value=state.skin.text;
-  $("#colorMuted").value=state.skin.muted;
-  $("#colorRing").value=state.skin.ring;
-  $("#rangeRadius").value=state.skin.radius;
-  $("#rangeShadow").value=state.skin.shadowPct;
-  $("#avatarRingSelect").value=state.skin.avatarRing;
-  $("#linkShapeSelect").value=state.skin.linkShape;
+  // seed inputs
+  $("#inpName").value = state.profile.name;
+  $("#inpEmail").value = state.profile.email;
+  $("#inpInitials").value = state.profile.initials;
 
+  // seed appearance inputs
+  $("#fontSelect").value = state.skin.font;
+  $("#colorBarStart").value = state.skin.barStart;
+  $("#colorBarEnd").value   = state.skin.barEnd;
+  $("#colorSurface").value  = state.skin.surface;
+  $("#colorText").value     = state.skin.text;
+  $("#colorMuted").value    = state.skin.muted;
+  $("#colorRing").value     = state.skin.ring;
+  $("#rangeRadius").value   = state.skin.radius;
+  $("#rangeShadow").value   = state.skin.shadowPct;
+  $("#avatarRingSelect").value  = state.skin.avatarRing;
+  $("#linkShapeSelect").value   = state.skin.linkShape;
+
+  // default zoom
+  $("#cardZoomWrap").style.setProperty('--card-scale', state.zoom);
+
+  renderShapePicker();
   renderForm();
   renderPreview();
   applySkin();
-  renderShapePicker();
   wire();
-
-  if($("#publishLink")) $("#publishLink").value=buildPublishLink();
 })();
