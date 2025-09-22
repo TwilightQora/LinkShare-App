@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Devlinks — Card Builder</title>
 
-  <!-- Fonts (builder + viewer share these families) -->
+  <!-- Fonts (builder + viewer use the same families) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@400;700;900&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;700&family=Nunito:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;700&family=DM+Sans:wght@400;700&family=Source+Sans+3:wght@400;700&family=IBM+Plex+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700&family=Fira+Code:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -27,7 +27,7 @@
     <div class="actions">
       <button id="openFullPreview" class="btn ghost" title="Open full preview">Preview</button>
 
-      <!-- Theme toggle (iconic) -->
+      <!-- Theme toggle -->
       <button id="themeToggle" class="theme-toggle-2" type="button" aria-pressed="false" title="Toggle theme">
         <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5V2m0 20v-2.5M4.5 12H2m20 0h-2.5M5.64 5.64 4 4m16 16-1.64-1.64M18.36 5.64 20 4M4 20l1.64-1.64M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 1 0 9.8 9.8Z" fill="currentColor"/></svg>
@@ -42,21 +42,23 @@
     <!-- Left: phone preview -->
     <aside class="left-pane">
       <div class="phone-frame">
-        <section class="card" id="previewCard" data-avatar-shape="circle" data-avatar-ring="ring" data-link-shape="pill">
-          <div class="card-topbar"></div>
+        <div class="card-zoom" id="cardZoomWrap">
+          <section class="card" id="previewCard" data-avatar-shape="circle" data-avatar-ring="ring" data-link-shape="pill">
+            <div class="card-topbar"></div>
 
-          <div class="avatar" id="avatar">
-            <img id="avatarImg" alt="" />
-            <span id="avatarTxt">BR</span>
-          </div>
+            <div class="avatar" id="avatar">
+              <img id="avatarImg" alt="" />
+              <span id="avatarTxt">BR</span>
+            </div>
 
-          <header class="identity">
-            <h1 id="name">Your Name</h1>
-            <a id="email" class="email" href="mailto:you@example.com">you@example.com</a>
-          </header>
+            <header class="identity">
+              <h1 id="name">Your Name</h1>
+              <a id="email" class="email" href="mailto:you@example.com">you@example.com</a>
+            </header>
 
-          <nav class="links" id="linksList"></nav>
-        </section>
+            <nav class="links" id="linksList"></nav>
+          </section>
+        </div>
       </div>
     </aside>
 
@@ -190,6 +192,11 @@
                 <option value="square">Square</option>
                 <option value="cut">Cut</option>
               </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Card size (preview)</span>
+              <input type="range" id="cardSizeRange" min="0.8" max="1.25" step="0.01" value="1">
             </label>
           </div>
         </div>
