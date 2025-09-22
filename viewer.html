@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Devlinks — Card</title>
+  <!-- same fonts as builder -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@400;700;900&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;700&family=Nunito:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;700&family=DM+Sans:wght@400;700&family=Source+Sans+3:wght@400;700&family=IBM+Plex+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700&family=Fira+Code:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body{display:grid; place-items:center; padding:24px}
+    .card{max-width:420px}
+    .credits{position:fixed; bottom:10px; font-size:.8rem; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <section class="card card-large" id="card" data-avatar-shape="circle" data-avatar-ring="ring" data-link-shape="pill">
+    <div class="card-topbar"></div>
+    <div class="avatar" id="av"><img id="img"><span id="tx">BR</span></div>
+    <header class="identity">
+      <h1 id="nm">Your Name</h1>
+      <a id="em" class="email" href="#">you@example.com</a>
+    </header>
+    <nav class="links" id="ll"></nav>
+  </section>
+  <div class="credits">Made with devlinks</div>
+
+  <script>
+    const q = new URLSearchParams(location.search);
+    const data = q.get('data');
+    if(!data){ document.querySelector('.credits').textContent='Invalid link'; throw new Error('no data'); }
+    const json = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(data)))));
+    const {profile, links, skin} = json;
+
+    // apply skin
+    const fonts = {
+      system:'ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif',
+      inter:'"Inter"',
+      poppins:'"Poppins"',
+      merriweather:'"Merriweather", Georgia, serif',
+      robotomono:'"Roboto Mono", monospace',
+      nunito:'"Nunito"', lato:'"Lato"', opensans:'"Open Sans"', montserrat:'"Montserrat"',
+      playfair:'"Playfair Display", Georgia, serif', worksans:'"Work Sans"', dmsans:'"DM Sans"',
+      sourcesans:'"Source Sans 3"', ibmplex:'"IBM Plex Sans"', spacegrotesk:'"Space Grotesk"',
+      outfit:'"Outfit"', firacode:'"Fira Code", monospace', jetbrains:'"JetBrains Mono", monospace'
+    };
+    const card = document.getElementById('card');
+    card.style.setProperty('--card-font', fonts[skin.font] || fonts.system);
+    card.style.setProperty('--card-surface', skin.surface);
+    card.style.setProperty('--card-text', skin.text);
+    card.style.setProperty('--card-muted', skin.muted);
+    card.style.setProperty('--card-ring', skin.ring);
+    card.style.setProperty('--card-bar-start', skin.barStart);
+    card.style.setProperty('--card-bar-end', skin.barEnd);
+    card.style.setProperty('--card-radius', skin.radius+'px');
+    card.dataset.avatarShape = skin.avatarShape;
+    card.dataset.avatarRing  = skin.avatarRing;
+    card.dataset.linkShape   = skin.linkShape;
+
+    // profile
+    document.getElementById('nm').textContent = profile.name || 'Your Name';
+    document.getElementById('em').textContent = profile.email || 'you@example.com';
+    document.getElementById('em').href = 'mailto:'+(profile.email||'you@example.com');
+    const img = document.getElementById('img');
+    const av = document.getElementById('av');
+    document.getElementById('tx').textContent = (profile.initials||'BR').slice(0,3).toUpperCase();
+    if(profile.avatar){ img.src = profile.avatar; av.classList.add('has-image'); }
+
+    // links
+    const ll = document.getElementById('ll');
+    const labelMap = {website:'Website',facebook:'Facebook',github:'Github',linkedin:'LinkedIn'};
+    const classMap = {website:'website',facebook:'facebook',github:'github',linkedin:'linkedin'};
+    (links||[]).forEach(it=>{
+      if(!it.url) return;
+      const a=document.createElement('a');
+      a.className='btn-link '+(classMap[it.platform]||'website');
+      a.href=it.url; a.target='_blank'; a.rel='noopener';
+      a.innerHTML='<span class="label">'+(labelMap[it.platform]||'Link')+'</span><span class="chev">→</span>';
+      ll.appendChild(a);
+    });
+  </script>
+</body>
+</html>
