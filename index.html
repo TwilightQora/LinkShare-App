@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Devlinks — Card Builder</title>
+
+  <!-- Fonts (builder + viewer share these families) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@400;700;900&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;700&family=Nunito:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;700&family=DM+Sans:wght@400;700&family=Source+Sans+3:wght@400;700&family=IBM+Plex+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700&family=Fira+Code:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-icon">∞</span>
+      <span class="logo-text">devlinks</span>
+    </div>
+
+    <nav class="tabs" aria-label="Tabs">
+      <a href="#" class="tab active" data-tab="links">🔗 Links <span class="tab-ink"></span></a>
+      <a href="#" class="tab" data-tab="profile">👤 Profile Details <span class="tab-ink"></span></a>
+      <a href="#" class="tab" data-tab="appearance">🎨 Card Appearance <span class="tab-ink"></span></a>
+      <a href="#" class="tab" data-tab="publish">🚀 Publish <span class="tab-ink"></span></a>
+    </nav>
+
+    <div class="actions">
+      <button id="openFullPreview" class="btn ghost" title="Open full preview">Preview</button>
+
+      <!-- Theme toggle (iconic) -->
+      <button id="themeToggle" class="theme-toggle-2" type="button" aria-pressed="false" title="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5V2m0 20v-2.5M4.5 12H2m20 0h-2.5M5.64 5.64 4 4m16 16-1.64-1.64M18.36 5.64 20 4M4 20l1.64-1.64M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 1 0 9.8 9.8Z" fill="currentColor"/></svg>
+      </button>
+
+      <button id="saveAllBtn" class="btn primary">Save All</button>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Left: phone preview -->
+    <aside class="left-pane">
+      <div class="phone-frame">
+        <section class="card" id="previewCard" data-avatar-shape="circle" data-avatar-ring="ring" data-link-shape="pill">
+          <div class="card-topbar"></div>
+
+          <div class="avatar" id="avatar">
+            <img id="avatarImg" alt="" />
+            <span id="avatarTxt">BR</span>
+          </div>
+
+          <header class="identity">
+            <h1 id="name">Your Name</h1>
+            <a id="email" class="email" href="mailto:you@example.com">you@example.com</a>
+          </header>
+
+          <nav class="links" id="linksList"></nav>
+        </section>
+      </div>
+    </aside>
+
+    <!-- Right: editors -->
+    <main class="right-pane">
+      <!-- LINKS -->
+      <section class="editor" id="linksEditor">
+        <header class="editor-head">
+          <div>
+            <h2>Customize your links</h2>
+            <p class="muted">Live preview. Save All to persist.</p>
+          </div>
+          <div class="row-inline">
+            <button id="addLinkBtn" class="btn">Add new link</button>
+            <button id="resetTemplateBtn" class="btn danger-ghost">Reset to default template</button>
+          </div>
+        </header>
+        <div id="linksFormList" class="form-list"></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="panel hidden" id="profileDetails">
+        <h2>Profile Details</h2>
+        <div class="grid">
+          <label class="field">
+            <span class="field-label">Name</span>
+            <input type="text" id="inpName" placeholder="Your Name">
+          </label>
+          <label class="field">
+            <span class="field-label">Email</span>
+            <input type="email" id="inpEmail" placeholder="you@example.com">
+          </label>
+
+          <div class="photo-row">
+            <label class="field grow">
+              <span class="field-label">Initials</span>
+              <input type="text" id="inpInitials" maxlength="3" placeholder="BR">
+            </label>
+
+            <div class="photo-uploader">
+              <label class="field">
+                <span class="field-label">Profile photo</span>
+                <input type="file" id="inpAvatarFile" accept="image/*">
+              </label>
+              <div class="photo-actions">
+                <button id="btnEditPhoto" class="btn" type="button">Edit photo</button>
+                <button id="btnClearPhoto" class="btn ghost" type="button">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- APPEARANCE -->
+      <section class="panel hidden" id="appearance">
+        <h2>Card Appearance</h2>
+
+        <div class="appearance-grid">
+          <!-- FONT -->
+          <div class="appearance-card">
+            <h3>Font</h3>
+            <label class="field">
+              <span class="field-label">Family</span>
+              <select id="fontSelect">
+                <option value="system">System UI</option>
+                <option value="inter">Inter</option>
+                <option value="poppins">Poppins</option>
+                <option value="merriweather">Merriweather</option>
+                <option value="robotomono">Roboto Mono</option>
+                <option value="nunito">Nunito</option>
+                <option value="lato">Lato</option>
+                <option value="opensans">Open Sans</option>
+                <option value="montserrat">Montserrat</option>
+                <option value="playfair">Playfair Display</option>
+                <option value="worksans">Work Sans</option>
+                <option value="dmsans">DM Sans</option>
+                <option value="sourcesans">Source Sans 3</option>
+                <option value="ibmplex">IBM Plex Sans</option>
+                <option value="spacegrotesk">Space Grotesk</option>
+                <option value="outfit">Outfit</option>
+                <option value="firacode">Fira Code</option>
+                <option value="jetbrains">JetBrains Mono</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- COLORS -->
+          <div class="appearance-card">
+            <h3>Colors</h3>
+            <div class="color-grid">
+              <label class="field"><span class="field-label">Topbar start</span><input type="color" id="colorBarStart"></label>
+              <label class="field"><span class="field-label">Topbar end</span><input type="color" id="colorBarEnd"></label>
+              <label class="field"><span class="field-label">Surface</span><input type="color" id="colorSurface"></label>
+              <label class="field"><span class="field-label">Text</span><input type="color" id="colorText"></label>
+              <label class="field"><span class="field-label">Muted</span><input type="color" id="colorMuted"></label>
+              <label class="field"><span class="field-label">Ring</span><input type="color" id="colorRing"></label>
+            </div>
+          </div>
+
+          <!-- SHAPE -->
+          <div class="appearance-card">
+            <h3>Shape & Shadow</h3>
+            <label class="field">
+              <span class="field-label">Corner radius</span>
+              <input type="range" id="rangeRadius" min="8" max="32" value="22">
+            </label>
+            <label class="field">
+              <span class="field-label">Shadow</span>
+              <input type="range" id="rangeShadow" min="0" max="100" value="40">
+            </label>
+
+            <div class="shape-group">
+              <span class="shape-label">Avatar shape</span>
+              <div id="avatarShapePicker" class="shape-picker"></div>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Avatar ring</span>
+              <select id="avatarRingSelect">
+                <option value="ring">Ring</option>
+                <option value="glow">Glow</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Link buttons shape</span>
+              <select id="linkShapeSelect">
+                <option value="pill">Pill</option>
+                <option value="rounded">Rounded</option>
+                <option value="square">Square</option>
+                <option value="cut">Cut</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- PUBLISH -->
+      <section class="panel hidden" id="publish">
+        <h2>Publish</h2>
+        <p class="muted">Generate a shareable link to a clean card page (no settings).</p>
+        <div class="grid" style="max-width:720px">
+          <div class="row-inline">
+            <button id="btnGenerateLink" class="btn primary">Generate link</button>
+            <button id="btnCopyLink" class="btn" disabled>Copy link</button>
+            <a id="btnOpenLink" class="btn ghost" href="#" target="_blank" rel="noopener" style="pointer-events:none;opacity:.6">Open</a>
+          </div>
+          <label class="field">
+            <span class="field-label">Link</span>
+            <input id="publishUrl" type="text" readonly placeholder="Click Generate link">
+          </label>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Photo editor modal -->
+  <div id="photoModal" class="modal hidden" aria-hidden="true" role="dialog" aria-label="Edit profile photo">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <header class="modal-head">
+        <h3>Edit Profile Photo</h3>
+        <button id="closeModalBtn" class="btn ghost" type="button">✕</button>
+      </header>
+
+      <div class="cropper">
+        <div class="crop-stage" id="cropStage">
+          <img id="cropImg" alt="">
+          <div class="crop-mask"></div>
+        </div>
+        <div class="crop-controls">
+          <label class="field"><span class="field-label">Zoom</span><input type="range" id="zoomRange" min="0.5" max="3" step="0.01" value="1"></label>
+          <label class="field"><span class="field-label">Rotate</span><input type="range" id="rotateRange" min="-180" max="180" step="1" value="0"></label>
+        </div>
+      </div>
+
+      <footer class="modal-foot">
+        <button id="resetCropBtn" class="btn">Reset</button>
+        <div class="spacer"></div>
+        <button id="applyCropBtn" class="btn primary">Apply</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Full-preview overlay with page-flip animation -->
+  <div id="fullPreview" class="full-preview hidden" aria-hidden="true">
+    <div class="flip-page">
+      <section class="card card-large" id="previewCardFull"
+        data-avatar-shape="circle" data-avatar-ring="ring" data-link-shape="pill">
+        <div class="card-topbar"></div>
+        <div class="avatar"><img id="avatarImgFull"><span id="avatarTxtFull">BR</span></div>
+        <header class="identity">
+          <h1 id="nameFull">Your Name</h1>
+          <a id="emailFull" class="email" href="#">you@example.com</a>
+        </header>
+        <nav class="links" id="linksListFull"></nav>
+      </section>
+    </div>
+    <button id="closeFullPreview" class="btn back-btn">← Go back</button>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
