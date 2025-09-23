@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Devlinks — Card Builder</title>
 
-  <!-- Fonts (builder + viewer use the same families) -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@400;700;900&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;700&family=Nunito:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;700&family=DM+Sans:wght@400;700&family=Source+Sans+3:wght@400;700&family=IBM+Plex+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700&family=Fira+Code:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Top bar -->
-  <header class="topbar">
-    <div class="logo">
+  <header class="topbar" id="topbar">
+    <div class="brand">
       <span class="logo-icon">∞</span>
       <span class="logo-text">devlinks</span>
     </div>
@@ -72,11 +72,23 @@
             <p class="muted">Live preview. Save All to persist.</p>
           </div>
           <div class="row-inline">
-            <button id="addLinkBtn" class="btn">Add new link</button>
+            <button id="addLinkBtn" class="btn">Add social link</button>
+            <button id="addCustomBtn" class="btn">Add custom link</button>
             <button id="resetTemplateBtn" class="btn danger-ghost">Reset to default template</button>
           </div>
         </header>
-        <div id="linksFormList" class="form-list"></div>
+
+        <!-- Predefined -->
+        <div class="appearance-card" style="margin-bottom:12px">
+          <h3 style="margin-top:0">Social links</h3>
+          <div id="linksFormList" class="form-list"></div>
+        </div>
+
+        <!-- Custom -->
+        <div class="appearance-card">
+          <h3 style="margin-top:0">Custom links</h3>
+          <div id="customFormList" class="form-list"></div>
+        </div>
       </section>
 
       <!-- PROFILE -->
@@ -145,17 +157,10 @@
             </label>
           </div>
 
-          <!-- COLORS -->
+          <!-- COLORS (swatches) -->
           <div class="appearance-card">
             <h3>Colors</h3>
-            <div class="color-grid">
-              <label class="field"><span class="field-label">Topbar start</span><input type="color" id="colorBarStart"></label>
-              <label class="field"><span class="field-label">Topbar end</span><input type="color" id="colorBarEnd"></label>
-              <label class="field"><span class="field-label">Surface</span><input type="color" id="colorSurface"></label>
-              <label class="field"><span class="field-label">Text</span><input type="color" id="colorText"></label>
-              <label class="field"><span class="field-label">Muted</span><input type="color" id="colorMuted"></label>
-              <label class="field"><span class="field-label">Ring</span><input type="color" id="colorRing"></label>
-            </div>
+            <div id="colorSwatchGrid" class="color-swatch-grid"></div>
           </div>
 
           <!-- SHAPE -->
@@ -249,7 +254,7 @@
     </div>
   </div>
 
-  <!-- Full-preview overlay with page-flip animation -->
+  <!-- Full-preview overlay -->
   <div id="fullPreview" class="full-preview hidden" aria-hidden="true">
     <div class="flip-page">
       <section class="card card-large" id="previewCardFull"
