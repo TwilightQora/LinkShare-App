@@ -72,22 +72,21 @@
             <p class="muted">Live preview. Save All to persist.</p>
           </div>
           <div class="row-inline">
-            <button id="addLinkBtn" class="btn">Add social link</button>
-            <button id="addCustomBtn" class="btn">Add custom link</button>
+            <!-- SE QUITARON los dos botones globales -->
             <button id="resetTemplateBtn" class="btn danger-ghost">Reset to default template</button>
           </div>
         </header>
 
-        <!-- Predefined -->
-        <div class="appearance-card" style="margin-bottom:12px">
-          <h3 style="margin-top:0">Social links</h3>
+        <!-- Social links (única sección para todo, incluidos custom) -->
+        <div class="appearance-card" id="socialLinksCard">
+          <div class="card-head">
+            <h3>Social links</h3>
+            <div class="row-inline">
+              <button id="addPresetLinkBtn" class="btn">Add new link</button>
+              <button id="addCustomLinkBtn" class="btn">Add custom link</button>
+            </div>
+          </div>
           <div id="linksFormList" class="form-list"></div>
-        </div>
-
-        <!-- Custom -->
-        <div class="appearance-card">
-          <h3 style="margin-top:0">Custom links</h3>
-          <div id="customFormList" class="form-list"></div>
         </div>
       </section>
 
