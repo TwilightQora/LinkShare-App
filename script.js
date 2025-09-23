@@ -15,7 +15,7 @@ const DEFAULT_TEMPLATE_LINKS = [
   { type:"preset", platform:"twitter",  url:"https://x.com/your-handle" }
 ];
 
-// ===== Redes sociales ampliadas
+// ===== Platforms
 const PLATFORMS = [
   { key:"website",  label:"Website",  className:"website" },
   { key:"github",   label:"GitHub",   className:"github" },
@@ -52,54 +52,28 @@ const PLATFORMS = [
   { key:"calendly", label:"Calendly", className:"calendly" }
 ];
 
-// ===== Simple Icons slug map (para cargar iconos desde CDN)
+// ===== Simple Icons slug map (for CDN icons)
 const ICON_SLUG = {
-  website: null, // usaremos un emoji globito
-  github: "github",
-  gitlab: "gitlab",
-  linkedin: "linkedin",
-  facebook: "facebook",
-  twitter: "x",            // usa el logo 'X'; fallback a 'twitter' si falla
-  threads: "threads",
-  instagram: "instagram",
-  tiktok: "tiktok",
-  youtube: "youtube",
-  twitch: "twitch",
-  discord: "discord",
-  whatsapp: "whatsapp",
-  telegram: "telegram",
-  snapchat: "snapchat",
-  pinterest: "pinterest",
-  dribbble: "dribbble",
-  behance: "behance",
-  medium: "medium",
-  reddit: "reddit",
-  stackoverflow: "stackoverflow",
-  codepen: "codepen",
-  devto: "devdotto",
-  kaggle: "kaggle",
-  spotify: "spotify",
-  applemusic: "applemusic",
-  soundcloud: "soundcloud",
-  steam: "steam",
-  itch: "itchdotio",
-  patreon: "patreon",
-  buymeacoffee: "buymeacoffee",
-  paypal: "paypal",
-  calendly: "calendly"
+  website: null, github:"github", gitlab:"gitlab", linkedin:"linkedin", facebook:"facebook",
+  twitter:"x", threads:"threads", instagram:"instagram", tiktok:"tiktok", youtube:"youtube",
+  twitch:"twitch", discord:"discord", whatsapp:"whatsapp", telegram:"telegram", snapchat:"snapchat",
+  pinterest:"pinterest", dribbble:"dribbble", behance:"behance", medium:"medium", reddit:"reddit",
+  stackoverflow:"stackoverflow", codepen:"codepen", devto:"devdotto", kaggle:"kaggle",
+  spotify:"spotify", applemusic:"applemusic", soundcloud:"soundcloud", steam:"steam",
+  itch:"itchdotio", patreon:"patreon", buymeacoffee:"buymeacoffee", paypal:"paypal", calendly:"calendly"
 };
 
 // ===== Helpers
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const getJSON=(k,f)=>{try{const v=localStorage.getItem(k); return v?JSON.parse(v):f;}catch{return f;}}; // eslint-disable-line
+const getJSON=(k,f)=>{try{const v=localStorage.getItem(k); return v?JSON.parse(v):f;}catch{return f;}};
 const setJSON=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const copy=(t)=>navigator.clipboard?.writeText(t);
 const hexUp = (v)=>String(v||"").toUpperCase();
 
 // ===== State
 const state = {
-  links:   getJSON(K.links, []),               // mezcla preset y custom
+  links:   getJSON(K.links, []),
   profile: getJSON(K.profile, {...DEFAULT_PROFILE}),
   skin:    getJSON(K.skin,   {...DEFAULT_SKIN}),
   theme:   getJSON(K.theme,  "light"),
@@ -118,7 +92,7 @@ function initTheme(){
   applyTheme(state.theme);
 }
 
-/* Topbar elevación on scroll */
+/* Topbar elevation */
 (function(){
   const tb = document.getElementById("topbar");
   const setElev = ()=> tb.classList.toggle("elevated", window.scrollY > 6);
@@ -137,7 +111,7 @@ function showToast(msg, type="info", life=2800){
   setTimeout(()=>{ el.remove(); }, life + 700);
 }
 
-/* SKIN -> CSS vars + data attrs */
+/* SKIN -> CSS vars */
 function applySkin(){
   const el = $("#previewCard"), s = state.skin;
   const fonts = {
@@ -179,7 +153,6 @@ function applySkin(){
   el.dataset.avatarRing  = s.avatarRing  || "ring";
   el.dataset.linkShape   = s.linkShape   || "pill";
 
-  // mirror full
   const full = $("#previewCardFull");
   if(full){
     full.style.setProperty('--card-font', getComputedStyle(el).getPropertyValue('--card-font'));
@@ -199,11 +172,10 @@ function applySkin(){
   updateColorSwatchUI();
 }
 
-/* ===== Icon helpers ===== */
+/* Icon helpers */
 function iconImgForPlatform(key){
   const slug = ICON_SLUG[key];
   if(!slug){
-    // Website: usa un emoji globo para que siempre funcione
     return `<span role="img" aria-label="website">🌐</span>`;
   }
   const url = `https://cdn.simpleicons.org/${slug}/ffffff`;
@@ -272,7 +244,7 @@ function renderPreview(){
   buildLinks($("#linksListFull"));
 }
 
-/* FORMS (unificada) */
+/* FORMS */
 function renderForm(){
   const root=$("#linksFormList"); root.innerHTML="";
   state.links.forEach((item,idx)=>{
@@ -392,7 +364,7 @@ function exportCropped(size=512){
   return canvas.toDataURL("image/png");
 }
 
-/* FONT PREVIEW — el select enseña la fuente */
+/* FONT PREVIEW */
 function applyFontPreview(){
   const select = $("#fontSelect");
   const map = {
@@ -444,7 +416,6 @@ function renderColorSwatches(){
   const grid = $("#colorSwatchGrid"); if(!grid) return;
   grid.innerHTML = "";
 
-  // Preview gradiente
   const grad = document.createElement("div");
   grad.className = "color-field";
   grad.innerHTML = `
@@ -455,7 +426,6 @@ function renderColorSwatches(){
     </div>`;
   grid.appendChild(grad);
 
-  // Campos
   COLOR_FIELDS.forEach(({key,label})=>{
     const field = document.createElement("div");
     field.className = "color-field";
@@ -472,7 +442,6 @@ function renderColorSwatches(){
 
   updateColorSwatchUI();
 
-  // Eventos
   COLOR_FIELDS.forEach(({key})=>{
     const sw = $(`.swatch[data-key="${key}"]`);
     const inp = $(`#picker-${key}`);
@@ -488,7 +457,6 @@ function renderColorSwatches(){
     });
   });
 }
-
 function updateColorSwatchUI(){
   COLOR_FIELDS.forEach(({key})=>{
     const v = state.skin[key];
@@ -508,7 +476,7 @@ function updateColorSwatchUI(){
   }
 }
 
-/* PUBLISH — build encoded link to viewer.html */
+/* PUBLISH */
 function buildPublishLink(){
   const snapshot = { profile: state.profile, links: state.links, skin: state.skin };
   const json = JSON.stringify(snapshot);
@@ -537,7 +505,7 @@ function wire(){
     });
   });
 
-  // full preview
+  // full preview overlay
   $("#openFullPreview").addEventListener("click", ()=>{
     const panel = $("#fullPreview");
     panel.classList.remove("hidden","closing");
@@ -550,13 +518,13 @@ function wire(){
     setTimeout(()=>panel.classList.add("hidden"), 600);
   });
 
-  // theme
+  // theme toggle
   $("#themeToggle").addEventListener("click", ()=>{
     state.theme = (state.theme==="dark") ? "light" : "dark";
     applyTheme(state.theme);
   });
 
-  // links: botones internos de Social links
+  // Social links internal buttons
   $("#addPresetLinkBtn").addEventListener("click", ()=>{
     state.links.push({type:"preset", platform:"website", url:""});
     renderForm(); renderPreview();
@@ -566,7 +534,7 @@ function wire(){
     renderForm(); renderPreview();
   });
 
-  // list events
+  // list interactions
   $("#linksFormList").addEventListener("click", e=>{
     const rm=e.target.closest(".remove-btn"); if(!rm) return;
     const box=e.target.closest(".link-item"); const idx=Number(box.dataset.index);
@@ -596,7 +564,6 @@ function wire(){
     }
     renderPreview();
   });
-  // file change for custom icon
   $("#linksFormList").addEventListener("change", e=>{
     const fileInp = e.target.closest(".inp-icon-file"); if(!fileInp) return;
     const box=e.target.closest(".link-item"); const idx=Number(box.dataset.index);
@@ -634,7 +601,7 @@ function wire(){
     state.profile.avatar = null; $("#inpAvatarFile").value = ""; renderPreview();
   });
 
-  // cropper
+  // crop stage interactions
   const stage=$("#cropStage");
   stage.addEventListener("pointerdown", (e)=>{ crop.dragging=true; crop.start.x=e.clientX; crop.start.y=e.clientY; stage.setPointerCapture(e.pointerId); });
   stage.addEventListener("pointermove", (e)=>{ if(!crop.dragging) return; crop.tx += (e.clientX-crop.start.x); crop.ty += (e.clientY-crop.start.y); crop.start.x=e.clientX; crop.start.y=e.clientY; clampPan(); applyCropTransform(); });
@@ -685,18 +652,52 @@ function wire(){
   });
 }
 
-/* CLOSE MODAL */
+// Close modal
 function closeModal(){
   const modal = $("#photoModal");
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden","true");
 }
 
+/* ===== Range enhancer: progress fill + value bubble ===== */
+function enhanceRange(input, formatValue){
+  if(!input) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'range-wrap';
+  const bubble = document.createElement('span');
+  bubble.className = 'range-bubble';
+  input.parentNode.insertBefore(wrap, input);
+  wrap.appendChild(input);
+  wrap.appendChild(bubble);
+
+  const setUI = ()=>{
+    const min = Number(input.min ?? 0);
+    const max = Number(input.max ?? 100);
+    const val = Number(input.value ?? 0);
+    let pct = ((val - min) / (max - min)) * 100;
+    pct = Math.max(0, Math.min(100, pct));
+    input.style.setProperty('--p', pct + '%');
+    bubble.style.left = pct + '%';
+    const out = typeof formatValue === 'function' ? formatValue(val) : String(val);
+    bubble.textContent = out;
+  };
+
+  input.addEventListener('input', setUI);
+  input.addEventListener('change', setUI);
+  setUI();
+}
+function enhanceAllRanges(){
+  enhanceRange(document.getElementById('rangeRadius'), v => `${Math.round(v)}px`);
+  enhanceRange(document.getElementById('rangeShadow'), v => `${Math.round(v)}%`);
+  enhanceRange(document.getElementById('cardSizeRange'), v => `${Math.round(v*100)}%`);
+  enhanceRange(document.getElementById('zoomRange'), v => `${Math.round(v*100)}%`);
+  enhanceRange(document.getElementById('rotateRange'), v => `${Math.round(v)}°`);
+}
+
 /* BOOT */
 (function(){
   initTheme();
 
-  // seed inputs
   $("#inpName").value = state.profile.name;
   $("#inpEmail").value = state.profile.email;
   $("#inpInitials").value = state.profile.initials;
@@ -713,4 +714,7 @@ function closeModal(){
   renderColorSwatches();
   applySkin();
   wire();
+
+  // enhance sliders (after DOM is wired)
+  enhanceAllRanges();
 })();
