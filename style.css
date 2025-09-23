@@ -4,7 +4,9 @@
   --accent:#10b981;        /* emerald-500 */
   --accent-2:#059669;      /* emerald-600 */
   --ring:#34d399;          /* emerald-400 */
-  --shadow-lg:0 18px 40px rgba(9, 20, 15,.16); --shadow-md:0 10px 30px rgba(9, 20, 15,.12); --shadow-sm:0 6px 16px rgba(9, 20, 15,.10);
+  --shadow-lg:0 18px 40px rgba(9, 20, 15,.16);
+  --shadow-md:0 10px 30px rgba(9, 20, 15,.12);
+  --shadow-sm:0 6px 16px rgba(9, 20, 15,.10);
   --dur:.25s; --ease:cubic-bezier(.22,.8,.36,1);
   --radius:20px;
   --pad: clamp(14px, 2.2vw, 24px);
@@ -12,7 +14,9 @@
 html[data-theme="dark"]{
   --bg:#08120c; --bg-top:#0a1d13; --surface:#0c1711; --text:#e9fff4; --muted:#9CC7B2;
   --accent:#10b981; --accent-2:#059669; --ring:#34d399;
-  --shadow-lg:0 18px 40px rgba(0,0,0,.45); --shadow-md:0 10px 30px rgba(0,0,0,.38); --shadow-sm:0 6px 16px rgba(0,0,0,.32);
+  --shadow-lg:0 18px 40px rgba(0,0,0,.45);
+  --shadow-md:0 10px 30px rgba(0,0,0,.38);
+  --shadow-sm:0 6px 16px rgba(0,0,0,.32);
 }
 
 *{box-sizing:border-box}
@@ -67,16 +71,40 @@ html[data-theme="dark"] .theme-toggle-2 .moon{opacity:1;transform:translateX(0)}
 /* ===== Inputs / Layout ===== */
 .field{display:flex; flex-direction:column; gap:6px}
 .field-label{font-size:.9rem; color:var(--muted)}
-input, select{border:1px solid rgba(91,119,106,.25); border-radius:12px; padding:12px 12px; font:inherit; outline:none; background: rgba(255,255,255,.86); color: var(--text); min-height:44px}
+input, select{
+  border:1px solid rgba(91,119,106,.25); border-radius:12px;
+  padding:12px 12px; font:inherit; outline:none;
+  background: rgba(255,255,255,.86); color: var(--text); min-height:44px
+}
 html[data-theme="dark"] input, html[data-theme="dark"] select{background: rgba(12,23,18,.72); color: var(--text)}
 input:focus, select:focus{border-color:transparent; box-shadow:0 0 0 4px color-mix(in sRGB, var(--ring) 65%, transparent)}
 select:active{transform:scale(.998)}
 
 .layout{min-height:calc(100dvh - 64px); display:grid; grid-template-columns: minmax(320px, 380px) 1fr; gap: clamp(14px, 2.2vw, 28px); padding: var(--pad)}
-.left-pane{background: radial-gradient(140px 140px at 12% 6%, color-mix(in sRGB, var(--accent) 18%, transparent), transparent 60%), radial-gradient(160px 220px at 90% 90%, color-mix(in sRGB, var(--accent-2) 16%, transparent), transparent 70%), var(--surface); border-radius: var(--radius); box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center; padding: clamp(16px, 2vw, 26px); position:sticky; top:calc(64px + 24px); height:calc(100dvh - 112px); overflow:hidden}
-.phone-frame{width:min(94%, 360px); height:640px; border:12px solid rgba(231,241,235,.92); border-bottom-width:20px; border-top-width:28px; border-radius:36px; background: radial-gradient(120px 120px at 20% 10%, color-mix(in sRGB, var(--accent) 10%, transparent), transparent 60%), #f4f7f5; box-shadow: inset 0 0 0 2px #dfe8e2, 0 8px 20px rgba(9,20,15,.16), 0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent); display:flex; align-items:flex-start; justify-content:center; padding:8px; overflow:auto; animation: phonePulse 6s var(--ease) infinite}
-@keyframes phonePulse{0%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 20px rgba(9,20,15,.16),0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent)}50%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 24px rgba(9,20,15,.20),0 0 28px 6px color-mix(in sRGB, var(--accent) 20%, transparent)}100%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 20px rgba(9,20,15,.16),0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent)}}
-html[data-theme="dark"] .phone-frame{border-color:#1c2c24; background: radial-gradient(120px 120px at 20% 10%, color-mix(in sRGB, var(--accent) 12%, transparent), transparent 60%), #0b1510; box-shadow: inset 0 0 0 2px #1a2a23, 0 10px 22px rgba(0,0,0,.55), 0 0 0 0 color-mix(in sRGB, var(--accent) 20%, transparent)}
+.left-pane{
+  background: radial-gradient(140px 140px at 12% 6%, color-mix(in sRGB, var(--accent) 18%, transparent), transparent 60%),
+              radial-gradient(160px 220px at 90% 90%, color-mix(in sRGB, var(--accent-2) 16%, transparent), transparent 70%),
+              var(--surface);
+  border-radius: var(--radius); box-shadow:var(--shadow-md); display:flex; align-items:center; justify-content:center;
+  padding: clamp(16px, 2vw, 26px); position:sticky; top:calc(64px + 24px);
+  height:calc(100dvh - 112px); overflow:hidden
+}
+.phone-frame{
+  width:min(94%, 360px); height:640px; border:12px solid rgba(231,241,235,.92); border-bottom-width:20px; border-top-width:28px; border-radius:36px;
+  background: radial-gradient(120px 120px at 20% 10%, color-mix(in sRGB, var(--accent) 10%, transparent), transparent 60%), #f4f7f5;
+  box-shadow: inset 0 0 0 2px #dfe8e2, 0 8px 20px rgba(9,20,15,.16), 0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent);
+  display:flex; align-items:flex-start; justify-content:center; padding:8px; overflow:auto; animation: phonePulse 6s var(--ease) infinite
+}
+@keyframes phonePulse{
+  0%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 20px rgba(9,20,15,.16),0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent)}
+  50%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 24px rgba(9,20,15,.20),0 0 28px 6px color-mix(in sRGB, var(--accent) 20%, transparent)}
+  100%{box-shadow:inset 0 0 0 2px #dfe8e2,0 8px 20px rgba(9,20,15,.16),0 0 0 0 color-mix(in sRGB, var(--accent) 18%, transparent)}
+}
+html[data-theme="dark"] .phone-frame{
+  border-color:#1c2c24;
+  background: radial-gradient(120px 120px at 20% 10%, color-mix(in sRGB, var(--accent) 12%, transparent), transparent 60%), #0b1510;
+  box-shadow: inset 0 0 0 2px #1a2a23, 0 10px 22px rgba(0,0,0,.55), 0 0 0 0 color-mix(in sRGB, var(--accent) 20%, transparent)
+}
 
 .card-zoom{transform:scale(var(--card-scale,1)); transform-origin: top center; transition: transform .25s var(--ease)}
 .right-pane{background: radial-gradient(200px 110px at 90% -20px, color-mix(in sRGB, var(--accent) 14%, transparent), transparent 70%), var(--surface); border-radius: var(--radius); box-shadow:var(--shadow-md); min-height:640px; padding: clamp(16px, 2.2vw, 28px); position:relative; overflow:hidden}
@@ -241,6 +269,77 @@ html[data-theme="dark"] .phone-frame{border-color:#1c2c24; background: radial-gr
 .swatch .tick{position:absolute; right:6px; bottom:6px; width:16px; height:16px; border-radius:50%; background:#fff; display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.25); font-size:12px; line-height:1; color:#16a34a}
 .swatch[data-key="barPreview"]{background:linear-gradient(135deg, var(--card-bar-start), var(--card-bar-end)) !important; border:1px solid rgba(0,0,0,.06); box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
 html[data-theme="dark"] .swatch{border-color:rgba(255,255,255,.06)}
+
+/* ===== Modern range sliders (enhanced) ===== */
+input[type="range"]{
+  -webkit-appearance:none; appearance:none; width:100%;
+  height:12px; border-radius:999px; outline:0;
+  background:
+    linear-gradient(var(--accent) 0 0) 0/var(--p,0%) 100% no-repeat,
+    color-mix(in sRGB, var(--text) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in sRGB, var(--text) 8%, transparent);
+  transition: box-shadow .2s var(--ease), background .2s var(--ease), filter .2s var(--ease);
+}
+input[type="range"]:hover{ filter:saturate(108%) }
+input[type="range"]:focus-visible{
+  box-shadow:
+    0 0 0 3px color-mix(in sRGB, var(--ring) 55%, transparent),
+    inset 0 0 0 1px color-mix(in sRGB, var(--text) 8%, transparent);
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; border:2px solid var(--accent);
+  box-shadow:
+    0 2px 10px color-mix(in sRGB, var(--accent) 30%, transparent),
+    0 0 0 3px color-mix(in sRGB, var(--accent) 20%, transparent);
+  transition: transform .15s var(--ease), box-shadow .2s var(--ease);
+}
+input[type="range"]:hover::-webkit-slider-thumb{ transform:scale(1.04) }
+input[type="range"]:active::-webkit-slider-thumb{
+  transform:scale(0.98);
+  box-shadow:
+    0 2px 18px color-mix(in sRGB, var(--accent) 45%, transparent),
+    0 0 0 5px color-mix(in sRGB, var(--accent) 26%, transparent);
+}
+input[type="range"]::-moz-range-track{
+  height:12px; border-radius:999px; background:transparent;
+}
+input[type="range"]::-moz-range-progress{
+  height:12px; border-radius:999px; background:var(--accent);
+}
+input[type="range"]::-moz-range-thumb{
+  width:18px; height:18px; border:2px solid var(--accent);
+  border-radius:50%; background:#fff;
+  box-shadow:
+    0 2px 10px color-mix(in sRGB, var(--accent) 30%, transparent),
+    0 0 0 3px color-mix(in sRGB, var(--accent) 20%, transparent);
+  transition: transform .15s var(--ease), box-shadow .2s var(--ease);
+}
+input[type="range"]:hover::-moz-range-thumb{ transform:scale(1.04) }
+input[type="range"]:active::-moz-range-thumb{
+  transform:scale(0.98);
+  box-shadow:
+    0 2px 18px color-mix(in sRGB, var(--accent) 45%, transparent),
+    0 0 0 5px color-mix(in sRGB, var(--accent) 26%, transparent);
+}
+.range-wrap{ position:relative; width:100% }
+.range-wrap input[type="range"]{ width:100% }
+.range-bubble{
+  position:absolute; top:-30px; left:0; translate:-50% 0;
+  padding:2px 8px; border-radius:8px; font-weight:800; font-size:.78rem;
+  background:var(--surface); color:var(--text);
+  border:1px solid color-mix(in sRGB, var(--text) 10%, transparent);
+  box-shadow:var(--shadow-sm);
+  opacity:0; transform:scale(.95);
+  transition: opacity .18s var(--ease), transform .18s var(--ease);
+  pointer-events:none; white-space:nowrap;
+}
+.range-wrap input[type="range"]:hover + .range-bubble,
+.range-wrap input[type="range"]:active + .range-bubble,
+.range-wrap input[type="range"]:focus-visible + .range-bubble{
+  opacity:1; transform:scale(1);
+}
 
 /* ===== Breakpoints ===== */
 @media (max-width: 1140px){
